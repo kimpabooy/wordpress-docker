@@ -12,10 +12,11 @@ $slide_text_pretitle = get_post_meta($slide->ID, 'slide_text_pretitle', true);
 $slide_text_title = get_post_meta($slide->ID, 'slide_text_title', true);
 $slide_text_subtitle = get_post_meta($slide->ID, 'slide_text_subtitle', true); // Subtitle innehåller default Google Slide URL
 $slide_text_content = get_post_meta($slide->ID, 'slide_text_content', true);
-
+$slide_text_extraspace = get_post_meta($slide->ID, 'slide_text_extraspace', true );
 // Välj slide efter veckodag
 
 $googleslide = $slide_text_subtitle;
+$extraspace = $slide_text_extraspace;
 $weekurl = [];
 
 $weekurl[1] = get_post_meta( $slide->ID, 'slide_text_url1', true );
@@ -42,11 +43,35 @@ if (!empty($weekurl[$daynum])) {
 
 ?>
 <style>
-	.infotext {
-		font-size: 2em;
-	}
+.infotext {
+	font-size: 2em;
+}
+.iframe-crop-wrapper {
+	width: 640px;      /* 1/3 av 1920 */
+	height: 360px;     /* 1/3 av 1080 */ 
+	overflow: hidden;
+	display: inline-block;
+	background: #fff;
+	margin: 0 10px 0 10px;
+	position: relative;
+}
+.extra-space {
+	position: absolute;
+	width: 640px;
+	height: 540px;     /* 1/2 av 1080 */
+	top: -90px;
+	border: none;
+	background: #fff;
+}
+.foyer-slide-fields {
+	display: flex;
+	flex-direction: row;
+}
 </style>
-<div<?php $slide->classes(); ?><?php $slide->data_attr(); ?>>
+
+
+
+<div<?php $slide->classes(); ?> <?php $slide->data_attr(); ?>>
 	<div class="inner">
 		<div style="display: flex;">
 			<div style="flex-basis: 10%; padding: 10px;">
@@ -63,22 +88,89 @@ if (!empty($weekurl[$daynum])) {
 			</div>
 		</div>
 
-
-		<div class="foyer-slide-fields">
-
-			<?php
-			/*  */
-			
-			if (!empty($googleslide)) { ?>
-				
-				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1920" height="880"></iframe>
-
-
-			<?php } ?>
-		</div>
+		<?php
+		// Om både Google Slide och extrautrymme finns, visa båda. 
+		if (!empty($googleslide) && !empty($extraspace)) { ?>
+			<div class="foyer-slide-fields">
+				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="720"></iframe>
+				<div class="iframe-crop-wrapper">
+					<iframe class="extra-space" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
+				</div>
+			</div>
+		<?php }
+		// Om bara Google Slide finns, visa den och lägg till en tom iframe som placeholder för extrautrymmet.   
+		elseif (!empty($googleslide)) { ?>
+			<div class="foyer-slide-fields">
+				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="800"></iframe>
+				<div class="iframe-crop-wrapper">
+					<iframe class="extra-space" frameborder="0"></iframe>
+				</div>
+			</div>
+		<?php }
+		// Om bara extrautrymme finns, visa den och lägg till en tom iframe som placeholder för Google Slide.
+		elseif (!empty($extraspace)) { ?>
+			<div class="foyer-slide-fields">
+				<iframe frameborder="0" width="1280" height="800"></iframe>
+				<div class="iframe-crop-wrapper">
+					<iframe class="extra-space" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
+				</div>
+			</div>
+		<?php } ?>
 	</div>
 	<?php $slide->background(); ?>
+</div>
+
+
+<?php
+/*
+<div<?php $slide->classes(); ?> <?php $slide->data_attr(); ?>>
+	<div class="inner">
+		<div style="display: flex;">
+			<div style="flex-basis: 10%; padding: 10px;">
+				<script src="https://cdn.logwork.com/widget/clock.js"></script>
+				<a href="https://logwork.com/clock-widget/" class="clock-time" data-style="cyanv2" data-size="150" data-timezone="Europe/Stockholm">&nbsp;</a>
+			</div>
+			<div style="flex-basis: 30%; padding: 10px;">
+				<div class="infotext" id="dagensdatum"></div>
+				<div class="infotext" id="klocka"></div>
+			</div>
+			<div style="flex-basis: 60%; padding: 10px;">
+				<div class="infotext" id="dagenslunch"></div>
+				<div class="infotext" id="matstod"><?php echo $matspecial[$daynum]; ?></div>
+			</div>
+		</div>
+
+		<?php
+		// Om både Google Slide och extrautrymme finns, visa båda. 
+		if (!empty($googleslide) && !empty($extraspace)) { ?>
+			<div class="foyer-slide-fields" style="display: flex; flex-direction: row;">
+				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="800"></iframe>
+				<iframe src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0" width="660" height="325" style="margin: 0 10px 0 10px;"></iframe>
+			</div>
+		<?php }
+		
+		// Om bara Google Slide finns, visa den och lägg till en tom iframe som placeholder för extrautrymmet.   
+		elseif (!empty($googleslide)) { ?>
+			<div class="foyer-slide-fields" style="display: flex; flex-direction: row;">
+				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="800"></iframe>
+				<iframe frameborder="0" width="660" height="325" style="margin: 0 10px 0 10px;"></iframe>
+			</div>
+		<?php }
+		
+		// Om bara extrautrymme finns, visa den och lägg till en tom iframe som placeholder för Google Slide.
+		elseif (!empty($extraspace)) { ?>
+			<div class="foyer-slide-fields" style="display: flex; flex-direction: row;">
+				<iframe frameborder="0" width="1280" height="800"></iframe>
+				<iframe src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0" width="660" height="325" style="margin: 0 10px 0 10px; "></iframe>
+			</div>
+		<?php } ?>
 	</div>
+	<?php $slide->background(); ?>
+</div>
+
+*/ ?>
+
+
 	<script>
 		function fyllDagensLunch() {
 			// Hämta referensen till din div

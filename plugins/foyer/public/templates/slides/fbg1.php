@@ -46,31 +46,46 @@ if (!empty($weekurl[$daynum])) {
 .infotext {
 	font-size: 2em;
 }
-.iframe-crop-wrapper {
-	width: 640px;      /* 1/3 av 1920 */
-	height: 360px;     /* 1/3 av 1080 */ 
-	overflow: hidden;
-	display: inline-block;
-	background: #fff;
-	margin: 0 10px 0 10px;
-	position: relative;
-}
-.extra-space {
-	position: absolute;
-	width: 640px;
-	height: 540px;     /* 1/2 av 1080 */
-	top: -90px;
-	border: none;
-	background: #fff;
-}
+
+/* style för både schema och extrautrymme */
 .foyer-slide-fields {
 	display: flex;
 	flex-direction: row;
+	position: relative;
+}
+
+/* Schema */
+.schema-iframe-crop-wrapper {
+	width: 660px;
+	height: 360px;
+	overflow: hidden;
+	position: relative;
+}
+.schema-iframe {
+	width: 97%;
+	height: 97%;
+}
+
+/* Extrautrymme */
+.extra-space-iframe-crop-wrapper {
+	display: block;
+	width: 640px;
+	height: 346px;   
+	overflow: hidden;
+	background: #fff;
+	position: absolute;
+	top: 0;
+	right: -315px;
+	z-index: 10;
+}
+.extra-space-iframe {
+	width: 640px;
+	height: 360px;
+	background: #fff;
 }
 </style>
 
 
-
 <div<?php $slide->classes(); ?> <?php $slide->data_attr(); ?>>
 	<div class="inner">
 		<div style="display: flex;">
@@ -88,88 +103,37 @@ if (!empty($weekurl[$daynum])) {
 			</div>
 		</div>
 
-		<?php
-		// Om både Google Slide och extrautrymme finns, visa båda. 
+	<?php
+		// Om både Google Slide och extrautrymme finns, visa båda.
 		if (!empty($googleslide) && !empty($extraspace)) { ?>
 			<div class="foyer-slide-fields">
-				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="720"></iframe>
-				<div class="iframe-crop-wrapper">
-					<iframe class="extra-space" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
+				<div class="schema-iframe-crop-wrapper">
+					<iframe class="schema-iframe" src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="720" scrolling="no" style="overflow:hidden;"></iframe>
+				</div>
+				<div class="extra-space-iframe-crop-wrapper">
+					<iframe class="extra-space-iframe" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
 				</div>
 			</div>
 		<?php }
-		// Om bara Google Slide finns, visa den och lägg till en tom iframe som placeholder för extrautrymmet.   
-		elseif (!empty($googleslide)) { ?>
+		// Om bara Google Slide finns, visa endast den (ingen extra tom iframe/div)
+		elseif (!empty($googleslide) && empty($extraspace)) { ?>
 			<div class="foyer-slide-fields">
-				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="800"></iframe>
-				<div class="iframe-crop-wrapper">
-					<iframe class="extra-space" frameborder="0"></iframe>
+				<div class="schema-iframe-crop-wrapper">
+					<iframe class="schema-iframe" src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="720" scrolling="no" style="overflow:hidden;"></iframe>
 				</div>
 			</div>
 		<?php }
-		// Om bara extrautrymme finns, visa den och lägg till en tom iframe som placeholder för Google Slide.
-		elseif (!empty($extraspace)) { ?>
+		// Om bara extrautrymme finns, visa endast den
+		elseif (!empty($extraspace) && empty($googleslide)) { ?>
 			<div class="foyer-slide-fields">
-				<iframe frameborder="0" width="1280" height="800"></iframe>
-				<div class="iframe-crop-wrapper">
-					<iframe class="extra-space" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
+				<div class="extra-space-iframe-crop-wrapper">
+					<iframe class="extra-space-iframe" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
 				</div>
 			</div>
 		<?php } ?>
 	</div>
 	<?php $slide->background(); ?>
 </div>
-
-
-<?php
-/*
-<div<?php $slide->classes(); ?> <?php $slide->data_attr(); ?>>
-	<div class="inner">
-		<div style="display: flex;">
-			<div style="flex-basis: 10%; padding: 10px;">
-				<script src="https://cdn.logwork.com/widget/clock.js"></script>
-				<a href="https://logwork.com/clock-widget/" class="clock-time" data-style="cyanv2" data-size="150" data-timezone="Europe/Stockholm">&nbsp;</a>
-			</div>
-			<div style="flex-basis: 30%; padding: 10px;">
-				<div class="infotext" id="dagensdatum"></div>
-				<div class="infotext" id="klocka"></div>
-			</div>
-			<div style="flex-basis: 60%; padding: 10px;">
-				<div class="infotext" id="dagenslunch"></div>
-				<div class="infotext" id="matstod"><?php echo $matspecial[$daynum]; ?></div>
-			</div>
-		</div>
-
-		<?php
-		// Om både Google Slide och extrautrymme finns, visa båda. 
-		if (!empty($googleslide) && !empty($extraspace)) { ?>
-			<div class="foyer-slide-fields" style="display: flex; flex-direction: row;">
-				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="800"></iframe>
-				<iframe src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0" width="660" height="325" style="margin: 0 10px 0 10px;"></iframe>
-			</div>
-		<?php }
-		
-		// Om bara Google Slide finns, visa den och lägg till en tom iframe som placeholder för extrautrymmet.   
-		elseif (!empty($googleslide)) { ?>
-			<div class="foyer-slide-fields" style="display: flex; flex-direction: row;">
-				<iframe src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="800"></iframe>
-				<iframe frameborder="0" width="660" height="325" style="margin: 0 10px 0 10px;"></iframe>
-			</div>
-		<?php }
-		
-		// Om bara extrautrymme finns, visa den och lägg till en tom iframe som placeholder för Google Slide.
-		elseif (!empty($extraspace)) { ?>
-			<div class="foyer-slide-fields" style="display: flex; flex-direction: row;">
-				<iframe frameborder="0" width="1280" height="800"></iframe>
-				<iframe src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0" width="660" height="325" style="margin: 0 10px 0 10px; "></iframe>
-			</div>
-		<?php } ?>
-	</div>
-	<?php $slide->background(); ?>
-</div>
-
-*/ ?>
-
 
 	<script>
 		function fyllDagensLunch() {

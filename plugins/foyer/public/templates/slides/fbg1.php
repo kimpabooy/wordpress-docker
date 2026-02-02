@@ -51,37 +51,53 @@ if (!empty($weekurl[$daynum])) {
 .foyer-slide-fields {
 	display: flex;
 	flex-direction: row;
-	position: relative;
+	justify-content: center;
+	align-items: flex-start;
+	width: 3840px;
+	max-width: 3840px;
+	box-sizing: border-box;
 }
 
 /* Schema */
+
 .schema-iframe-crop-wrapper {
-	width: 660px;
-	height: 360px;
+	width: 2560px;
+	height: 1440px;
 	overflow: hidden;
 	position: relative;
+	background: #fff;
+	box-sizing: border-box;
 }
 .schema-iframe {
-	width: 97%;
-	height: 97%;
+	width: 100vw;
+	height: 100vh;
+	border: none;
 }
 
 /* Extrautrymme */
+
 .extra-space-iframe-crop-wrapper {
-	display: block;
-	width: 640px;
-	height: 346px;   
+	width: 1280px;
+	height: 720px;
 	overflow: hidden;
 	background: #fff;
-	position: absolute;
-	top: 0;
-	right: -315px;
-	z-index: 10;
+	position: relative;
+	box-sizing: border-box;
 }
 .extra-space-iframe {
-	width: 640px;
-	height: 360px;
+	width: 100vw;
+	height: 100vh;
+	border: none;
 	background: #fff;
+}
+
+.foyer-slide-fields {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-start;
+	width: 100vw;
+	max-width: 100vw;
 }
 </style>
 
@@ -94,33 +110,33 @@ if (!empty($weekurl[$daynum])) {
 				<a href="https://logwork.com/clock-widget/" class="clock-time" data-style="cyanv2" data-size="150" data-timezone="Europe/Stockholm">&nbsp;</a>
 			</div>
 			<div style="flex-basis: 30%; padding: 10px;">
-				<div class="infotext" id="dagensdatum"></div>
-				<div class="infotext" id="klocka"></div>
+			<div class="infotext" id="dagensdatum"></div>
+			<div class="infotext" id="klocka"></div>
 			</div>
 			<div style="flex-basis: 60%; padding: 10px;">
 				<div class="infotext" id="dagenslunch"></div>
 				<div class="infotext" id="matstod"><?php echo $matspecial[$daynum]; ?></div>
-			</div>
+				</div>
 		</div>
 
 	<?php
 		// Om både Google Slide och extrautrymme finns, visa båda.
 		if (!empty($googleslide) && !empty($extraspace)) { ?>
 			<div class="foyer-slide-fields">
-				<div class="schema-iframe-crop-wrapper">
-					<iframe class="schema-iframe" src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="720" scrolling="no" style="overflow:hidden;"></iframe>
+			<div class="schema-iframe-crop-wrapper">
+			<iframe class="schema-iframe" src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0"></iframe>
 				</div>
 				<div class="extra-space-iframe-crop-wrapper">
 					<iframe class="extra-space-iframe" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
 				</div>
-			</div>
-		<?php }
+				</div>
+				<?php }
 		// Om bara Google Slide finns, visa endast den (ingen extra tom iframe/div)
 		elseif (!empty($googleslide) && empty($extraspace)) { ?>
 			<div class="foyer-slide-fields">
-				<div class="schema-iframe-crop-wrapper">
-					<iframe class="schema-iframe" src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0" width="1280" height="720" scrolling="no" style="overflow:hidden;"></iframe>
-				</div>
+			<div class="schema-iframe-crop-wrapper">
+			<iframe class="schema-iframe" src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0"></iframe>
+			</div>
 			</div>
 		<?php }
 		// Om bara extrautrymme finns, visa endast den
@@ -130,53 +146,53 @@ if (!empty($weekurl[$daynum])) {
 					<iframe class="extra-space-iframe" src="<?php echo $extraspace . '&rm=minimal'; ?>" frameborder="0"></iframe>
 				</div>
 			</div>
-		<?php } ?>
-	</div>
-	<?php $slide->background(); ?>
+			<?php } ?>
+			</div>
+			<?php $slide->background(); ?>
 </div>
 
 	<script>
-		function fyllDagensLunch() {
+	function fyllDagensLunch() {
 			// Hämta referensen till din div
 			var lunchDiv = document.getElementById("dagenslunch");
-
+			
 			// Kontrollera att div-referensen är giltig
 			if (lunchDiv) {
 				// Skapa en XMLHttpRequest-objekt
 				var xhr = new XMLHttpRequest();
-
+				
 				// Ange URL:en för JSON-dokumentet
 				var url = "https://intranet.falkenberg.se/fbg_apps/services/skolmat/soderskolan_rss.php";
 
 				// Ange att vi vill använda GET-metoden och att förfrågan ska vara asynkron
 				xhr.open("GET", url, true);
-
+				
 				// Ange att vi förväntar oss ett JSON-svar
 				xhr.setRequestHeader("Content-Type", "application/json");
-
+				
 				// Lyssna på förändringar i förfrågningsstatusen
 				xhr.onreadystatechange = function() {
 					if (xhr.readyState === 4 && xhr.status === 200) {
 						// Om förfrågan är klar och framgångsrik
 						var jsonData = JSON.parse(xhr.responseText);
-
+						
 						var today = new Date();
 
 						// Get the year, month, and day from the Date object
 						var year = today.getFullYear();
 						var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero if needed
 						var day = today.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-
+						
 						// Create the formatted date string
 						var formattedDate = year + '-' + month + '-' + day;
 
 						// Hämta lunchobjektet för datumet formattedDate
 						var lunchItems = jsonData.weeks[0].days.find(function(day) {
 							return day.date === formattedDate;
-						}).items;
-
-						// Kontrollera om det finns lunchobjekt för det angivna datumet
-						if (lunchItems && lunchItems.length > 0) {
+							}).items;
+							
+							// Kontrollera om det finns lunchobjekt för det angivna datumet
+							if (lunchItems && lunchItems.length > 0) {
 							// Skapa en textnod för varje lunchobjekt
 							lunchItems.forEach(function(item) {
 								var lunchText = document.createTextNode(item);
@@ -187,7 +203,7 @@ if (!empty($weekurl[$daynum])) {
 							// Om det inte finns några lunchobjekt för det angivna datumet
 							var ingenLunchText = document.createTextNode("Ingen lunch tillgänglig.");
 							lunchDiv.appendChild(ingenLunchText);
-						}
+							}
 					}
 				};
 
@@ -238,10 +254,10 @@ if (!empty($weekurl[$daynum])) {
 
 		startTime();
 		fyllDagensLunch();
-
+		
 		function reloadPage() {
-        location.reload();
-    }
-
+			location.reload();
+		}
+		
     setTimeout(reloadPage, 600000); // 10 minutes in milliseconds
-	</script>
+		</script>

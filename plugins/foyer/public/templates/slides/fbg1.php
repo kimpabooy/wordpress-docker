@@ -56,10 +56,10 @@ if (!empty($weekurl[$daynum])) {
 	width: 3840px;
 	max-width: 3840px;
 	box-sizing: border-box;
+
 }
 
 /* Schema */
-
 .schema-iframe-crop-wrapper {
 	width: 2560px;
 	height: 1440px;
@@ -67,6 +67,7 @@ if (!empty($weekurl[$daynum])) {
 	position: relative;
 	background: #fff;
 	box-sizing: border-box;
+	/* overflow: hidden; */
 }
 .schema-iframe {
 	width: 100vw;
@@ -75,7 +76,6 @@ if (!empty($weekurl[$daynum])) {
 }
 
 /* Extrautrymme */
-
 .extra-space-iframe-crop-wrapper {
 	width: 1280px;
 	height: 720px;
@@ -87,7 +87,7 @@ if (!empty($weekurl[$daynum])) {
 .extra-space-iframe {
 	width: 100vw;
 	height: 100vh;
-	border: none;
+	/* border: none; */
 	background: #fff;
 }
 

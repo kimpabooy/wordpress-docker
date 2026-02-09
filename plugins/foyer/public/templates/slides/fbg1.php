@@ -48,7 +48,7 @@ if (!empty($weekurl[$daynum])) {
 }
 
 /* style för både schema och extrautrymme */
-.foyer-slide-fields {
+/* .foyer-slide-fields {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
@@ -56,10 +56,39 @@ if (!empty($weekurl[$daynum])) {
 	width: 3840px;
 	max-width: 3840px;
 	box-sizing: border-box;
-
+	
+	} */
+	
+.foyer-slide-fields {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-start;
+	width: 100vw;
+	max-width: 100vw;
 }
 
 /* Schema */
+
+/* Standard schema-iframe (i crop-wrapper) */
+/* .schema-iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+	display: block;
+	object-fit: contain;
+	overflow: hidden;
+} */
+.schema-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    object-fit: cover; /* Fyller hela containern, kan beskära */
+    max-width: none;
+    max-height: none;
+    overflow: hidden;
+}
 .schema-iframe-crop-wrapper {
 	width: 2560px;
 	height: 1440px;
@@ -69,13 +98,39 @@ if (!empty($weekurl[$daynum])) {
 	box-sizing: border-box;
 	/* overflow: hidden; */
 }
-.schema-iframe {
-	width: 100vw;
-	height: 100vh;
-	border: none;
+.schema-iframe-crop-wrapper-fullwidth {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    width: 100vw;         /* eller 3840px om du vill ha fast bredd */
+    height: 100vh;         /* eller annan maxhöjd som passar skärmen */
+    /* aspect-ratio: 16 / 9; */
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    box-sizing: border-box;
 }
 
+.schema-iframe-crop-wrapper-fullwidth .schema-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    object-fit: cover; /* Har bara effekt om det är en <img> eller <video> i iframen */
+    max-width: 100%;
+    max-height: 100%;
+}	
+
 /* Extrautrymme */
+
+.extra-space-iframe {
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	border: none;
+	display: block;
+	object-fit: contain;
+}
 .extra-space-iframe-crop-wrapper {
 	width: 1280px;
 	height: 720px;
@@ -84,21 +139,16 @@ if (!empty($weekurl[$daynum])) {
 	position: relative;
 	box-sizing: border-box;
 }
-.extra-space-iframe {
-	width: 100vw;
-	height: 100vh;
-	/* border: none; */
-	background: #fff;
-}
 
-.foyer-slide-fields {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: flex-start;
-	width: 100vw;
-	max-width: 100vw;
-}
+/* Fullwidth-variant: sätt fasta mått på iframen */
+/* .schema-iframe-crop-wrapper-fullwidth .schema-iframe {
+	width: 3840px;
+	height: 1440px;
+	border: none;
+	display: block;
+	object-fit: contain;
+	transform: translate(2.0);
+} */
 </style>
 
 
@@ -112,7 +162,7 @@ if (!empty($weekurl[$daynum])) {
 			<div style="flex-basis: 30%; padding: 10px;">
 			<div class="infotext" id="dagensdatum"></div>
 			<div class="infotext" id="klocka"></div>
-			</div>
+		</div>
 			<div style="flex-basis: 60%; padding: 10px;">
 				<div class="infotext" id="dagenslunch"></div>
 				<div class="infotext" id="matstod"><?php echo $matspecial[$daynum]; ?></div>
@@ -134,7 +184,7 @@ if (!empty($weekurl[$daynum])) {
 		// Om bara Google Slide finns, visa endast den (ingen extra tom iframe/div)
 		elseif (!empty($googleslide) && empty($extraspace)) { ?>
 			<div class="foyer-slide-fields">
-			<div class="schema-iframe-crop-wrapper">
+			<div class="schema-iframe-crop-wrapper-fullwidth">
 			<iframe class="schema-iframe" src="<?php echo $googleslide . '&rm=minimal'; ?>" frameborder="0"></iframe>
 			</div>
 			</div>
